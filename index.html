@@ -1,73 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Bren</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Georgia', serif;
-            background-color: #fcfcfc;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            color: #333;
-        }
-        .container {
-            max-width: 480px;
-            padding: 45px;
-            text-align: left;
-            line-height: 1.8;
-            background: white;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-            border-radius: 4px;
-            margin: 20px;
-        }
-        h1 {
-            font-size: 1.4rem;
-            margin-bottom: 25px;
-            color: #111;
-            font-weight: normal;
-            letter-spacing: 0.5px;
-        }
-        p {
-            margin-bottom: 22px;
-            font-size: 1.05rem;
-            color: #444;
-        }
-        .highlight {
-            color: #000;
-            font-weight: 600;
-        }
-        .footer {
-            margin-top: 50px;
-            padding-top: 20px;
-            border-top: 1px solid #f0f0f0;
-            font-size: 1rem;
-            color: #222;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Bren</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Georgia', serif;
+    background-color: #faf9f7;
+    color: #333;
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+}
+
+.section {
+    min-height: 100vh;
+    scroll-snap-align: start;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+}
+
+.card {
+    max-width: 520px;
+    background: #ffffff;
+    padding: 50px;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.05);
+    border-radius: 6px;
+    line-height: 1.9;
+}
+
+h1 {
+    font-size: 1.5rem;
+    font-weight: normal;
+    margin-bottom: 30px;
+}
+
+p {
+    font-size: 1.05rem;
+    margin-bottom: 22px;
+    color: #444;
+}
+
+.highlight {
+    font-weight: 600;
+    color: #222;
+}
+
+.section-image {
+    width: 100%;
+    margin: 35px 0;
+    border-radius: 4px;
+}
+
+.footer {
+    margin-top: 40px;
+    font-size: 1rem;
+    color: #555;
+}
+</style>
 </head>
+
 <body>
 
-    <div class="container">
+<!-- SECTION 1 -->
+<section class="section">
+    <div class="card">
         <h1>Hi, Bren.</h1>
-        
-        <p>I’m writing this because I want everything to be clear between us so I can stop overthinking it.</p>
-        
-        <p>To be honest, all the effort and attention I’ve given you lately is because <span class="highlight">my feelings and interest in you are still the same today.</span> I don’t want there to be any misunderstanding—this isn't just about the past or making amends; I’m actually interested in pursuing you.</p>
-        
-        <p>However, I want to do this in a way that feels comfortable for you. I’d like for us to <span class="highlight">keep things chill and not rush into anything</span>, because my priority is your comfort.</p>
-        
-        <p>I just need your honesty—is there a window of opportunity for us, or is that door closed? Whatever your answer is, I’ll respect it. I just needed to be honest with you.</p>
+        <p>I’m writing this because I want everything to be clear between us.</p>
+    </div>
+</section>
+
+<!-- SECTION 2 -->
+<section class="section">
+    <div class="card">
+        <p>
+            All the effort and attention I’ve given you lately
+            is because <span class="highlight">my feelings are still the same today.</span>
+        </p>
+
+        <img src="images/diagram.png" alt="Diagram" class="section-image">
+
+        <p>
+            This isn’t about fixing the past.
+            It’s about being honest with where I am right now.
+        </p>
+    </div>
+</section>
+
+<!-- SECTION 3 -->
+<section class="section">
+    <div class="card">
+        <p>
+            I want to keep things <span class="highlight">calm and unforced</span>.
+            Your comfort matters more to me than moving fast.
+        </p>
+    </div>
+</section>
+
+<!-- SECTION 4 -->
+<section class="section">
+    <div class="card">
+        <p>
+            I just need your honesty —
+            is there still a window for us, or is that door closed?
+        </p>
+
+        <p>
+            Whatever your answer is,
+            I’ll respect it.
+        </p>
 
         <div class="footer">
             Jonathan
         </div>
     </div>
+</section>
 
 </body>
 </html>
