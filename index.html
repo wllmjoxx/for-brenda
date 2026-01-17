@@ -6,47 +6,68 @@
 <title>For Bren</title>
 
 <style>
-* {
-    box-sizing: border-box;
-}
-
 body {
     margin: 0;
+    height: 100vh;
+    overflow: hidden;
     font-family: 'Georgia', serif;
     background-color: #faf9f7;
     color: #333;
-    scroll-snap-type: y mandatory;
-    overflow-y: scroll;
 }
 
-.section {
-    min-height: 100vh;
-    scroll-snap-align: start;
+.wrapper {
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 60px 20px;
 }
 
 .card {
     max-width: 520px;
-    background: #ffffff;
+    background: #fff;
     padding: 50px;
     box-shadow: 0 6px 25px rgba(0,0,0,0.05);
     border-radius: 6px;
+    text-align: left;
     line-height: 1.9;
 }
 
-h1 {
-    font-size: 1.5rem;
-    font-weight: normal;
+/* DIAGRAM */
+.diagram {
+    text-align: center;
+}
+
+.diagram img {
+    width: 100%;
+    border-radius: 4px;
     margin-bottom: 30px;
 }
 
-p {
-    font-size: 1.05rem;
-    margin-bottom: 22px;
+.button {
+    padding: 12px 28px;
+    border: 1px solid #ddd;
+    background: none;
+    font-family: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
     color: #444;
+    transition: all 0.3s ease;
+}
+
+.button:hover {
+    background: #f3f2f0;
+}
+
+/* TEXT SECTIONS */
+.text {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.text.active {
+    display: block;
+    opacity: 1;
 }
 
 .highlight {
@@ -54,75 +75,91 @@ p {
     color: #222;
 }
 
-.section-image {
-    width: 100%;
-    margin: 35px 0;
-    border-radius: 4px;
+/* SCROLL INDICATOR */
+.scroll-indicator {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #777;
+    animation: fadeMove 1.8s infinite;
 }
 
-.footer {
-    margin-top: 40px;
-    font-size: 1rem;
-    color: #555;
+@keyframes fadeMove {
+    0% { opacity: 0; transform: translateY(0); }
+    50% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(10px); }
 }
 </style>
 </head>
 
 <body>
 
-<!-- SECTION 1 -->
-<section class="section">
+<div class="wrapper">
     <div class="card">
-        <h1>Hi, Bren.</h1>
-        <p>I’m writing this because I want everything to be clear between us.</p>
-    </div>
-</section>
 
-<!-- SECTION 2 -->
-<section class="section">
-    <div class="card">
-        <p>
-            All the effort and attention I’ve given you lately
-            is because <span class="highlight">my feelings are still the same today.</span>
-        </p>
-
-        <img src="images/diagram.png" alt="Diagram" class="section-image">
-
-        <p>
-            This isn’t about fixing the past.
-            It’s about being honest with where I am right now.
-        </p>
-    </div>
-</section>
-
-<!-- SECTION 3 -->
-<section class="section">
-    <div class="card">
-        <p>
-            I want to keep things <span class="highlight">calm and unforced</span>.
-            Your comfort matters more to me than moving fast.
-        </p>
-    </div>
-</section>
-
-<!-- SECTION 4 -->
-<section class="section">
-    <div class="card">
-        <p>
-            I just need your honesty —
-            is there still a window for us, or is that door closed?
-        </p>
-
-        <p>
-            Whatever your answer is,
-            I’ll respect it.
-        </p>
-
-        <div class="footer">
-            Jonathan
+        <!-- DIAGRAM FIRST -->
+        <div class="diagram" id="diagram">
+            <img src="images/diagram.png" alt="Diagram">
+            <button class="button" onclick="startReading()">Open</button>
         </div>
+
+        <!-- TEXT CONTENT -->
+        <div class="text" id="text">
+            <div id="content"></div>
+            <div class="scroll-indicator">scroll ⌄</div>
+        </div>
+
     </div>
-</section>
+</div>
+
+<script>
+const paragraphs = [
+    `<h1>Hi, Bren.</h1>
+     <p>I’m writing this because I want everything to be clear between us.</p>`,
+
+    `<p>
+        All the effort and attention I’ve given you lately
+        is because <span class="highlight">my feelings are still the same today.</span>
+    </p>`,
+
+    `<p>
+        This isn’t about fixing the past.
+        It’s about being honest with where I am right now.
+    </p>`,
+
+    `<p>
+        I want to keep things calm and unforced.
+        Your comfort matters more to me than moving fast.
+    </p>`,
+
+    `<p>
+        I just need your honesty —
+        is there still a window for us, or is that door closed?
+    </p>
+     <p>Whatever your answer is, I’ll respect it.</p>
+     <p>— Jonathan</p>`
+];
+
+let index = 0;
+let locked = false;
+
+function startReading() {
+    document.getElementById('diagram').style.display = 'none';
+    document.getElementById('text').classList.add('active');
+    document.getElementById('content').innerHTML = paragraphs[0];
+}
+
+window.addEventListener('wheel', (e) => {
+    if (!document.getElementById('text').classList.contains('active')) return;
+    if (locked) return;
+
+    locked = true;
+    index = Math.min(paragraphs.length - 1, index + (e.deltaY > 0 ? 1 : -1));
+    document.getElementById('content').innerHTML = paragraphs[index];
+
+    setTimeout(() => locked = false, 600);
+});
+</script>
 
 </body>
 </html>
