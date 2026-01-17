@@ -23,12 +23,12 @@ body {
 }
 
 .card {
+    width: 90%;
     max-width: 520px;
-    background: #fff;
-    padding: 50px;
+    background: #ffffff;
+    padding: 48px;
     box-shadow: 0 6px 25px rgba(0,0,0,0.05);
     border-radius: 6px;
-    text-align: left;
     line-height: 1.9;
 }
 
@@ -40,25 +40,32 @@ body {
 .diagram img {
     width: 100%;
     border-radius: 4px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
+.diagram-placeholder {
+    font-size: 0.9rem;
+    color: #777;
+    margin-bottom: 25px;
+}
+
+/* BUTTON */
 .button {
-    padding: 12px 28px;
+    padding: 12px 30px;
     border: 1px solid #ddd;
     background: none;
     font-family: inherit;
     font-size: 0.95rem;
     cursor: pointer;
     color: #444;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
 }
 
 .button:hover {
-    background: #f3f2f0;
+    background: #f2f1ee;
 }
 
-/* TEXT SECTIONS */
+/* TEXT MODE */
 .text {
     display: none;
     opacity: 0;
@@ -77,14 +84,14 @@ body {
 
 /* SCROLL INDICATOR */
 .scroll-indicator {
-    margin-top: 40px;
+    margin-top: 35px;
     text-align: center;
     font-size: 0.85rem;
     color: #777;
-    animation: fadeMove 1.8s infinite;
+    animation: scrollHint 1.8s infinite;
 }
 
-@keyframes fadeMove {
+@keyframes scrollHint {
     0% { opacity: 0; transform: translateY(0); }
     50% { opacity: 1; }
     100% { opacity: 0; transform: translateY(10px); }
@@ -99,11 +106,15 @@ body {
 
         <!-- DIAGRAM FIRST -->
         <div class="diagram" id="diagram">
-            <img src="images/diagram.png" alt="Diagram">
+            <img src="images/diagram.png" alt="Diagram"
+                 onerror="this.style.display='none'">
+            <div class="diagram-placeholder">
+                A simple overview before I explain things in words.
+            </div>
             <button class="button" onclick="startReading()">Open</button>
         </div>
 
-        <!-- TEXT CONTENT -->
+        <!-- TEXT MODE -->
         <div class="text" id="text">
             <div id="content"></div>
             <div class="scroll-indicator">scroll ⌄</div>
@@ -120,22 +131,22 @@ const paragraphs = [
     `<p>
         All the effort and attention I’ve given you lately
         is because <span class="highlight">my feelings are still the same today.</span>
-    </p>`,
+     </p>`,
 
     `<p>
         This isn’t about fixing the past.
         It’s about being honest with where I am right now.
-    </p>`,
+     </p>`,
 
     `<p>
         I want to keep things calm and unforced.
         Your comfort matters more to me than moving fast.
-    </p>`,
+     </p>`,
 
     `<p>
         I just need your honesty —
         is there still a window for us, or is that door closed?
-    </p>
+     </p>
      <p>Whatever your answer is, I’ll respect it.</p>
      <p>— Jonathan</p>`
 ];
@@ -154,10 +165,13 @@ window.addEventListener('wheel', (e) => {
     if (locked) return;
 
     locked = true;
-    index = Math.min(paragraphs.length - 1, index + (e.deltaY > 0 ? 1 : -1));
+
+    if (e.deltaY > 0 && index < paragraphs.length - 1) index++;
+    if (e.deltaY < 0 && index > 0) index--;
+
     document.getElementById('content').innerHTML = paragraphs[index];
 
-    setTimeout(() => locked = false, 600);
+    setTimeout(() => locked = false, 450);
 });
 </script>
 
