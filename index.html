@@ -39,7 +39,7 @@ body {
     max-width: 520px;
     max-height: 70vh;
     background: var(--card);
-    padding: 34px 34px 26px;
+    padding: 32px;
     box-shadow: 0 16px 36px rgba(0,0,0,0.08);
     border-radius: 16px;
     display: flex;
@@ -71,18 +71,39 @@ body {
 .diagram img {
     width: 100%;
     border-radius: 12px;
-    margin-bottom: 26px;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+    margin-bottom: 24px;
+}
+
+/* TEXT */
+.text {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+}
+.text.active { display: block; }
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 16px;
+}
+
+p {
+    line-height: 1.8;
+    margin-bottom: 18px;
+}
+
+.highlight {
+    color: var(--accent);
 }
 
 /* BUTTONS */
 .button {
-    padding: 11px 28px;
+    padding: 10px 22px;
+    border-radius: 22px;
     border: none;
     background: var(--accent);
-    color: #fff;
-    font-size: 0.85rem;
-    border-radius: 24px;
+    color: white;
+    font-size: 0.8rem;
     cursor: pointer;
 }
 .button.secondary {
@@ -91,44 +112,16 @@ body {
     border: 1px solid var(--accent);
 }
 
-/* LETTER */
-.text {
-    display: none;
-    flex: 1;
-    overflow-y: auto;
-    padding-right: 6px;
-}
-.text.active { display: block; }
-
-.text::-webkit-scrollbar {
-    width: 4px;
-}
-.text::-webkit-scrollbar-thumb {
-    background: var(--soft);
-    border-radius: 4px;
-}
-
-h1 {
-    font-family: 'Playfair Display', serif;
-    font-weight: 600;
-    margin-bottom: 18px;
-}
-
-p {
-    line-height: 1.85;
-    margin-bottom: 20px;
-}
-
-.highlight {
-    color: var(--accent);
-    font-weight: 500;
-}
-
-/* BACK */
-.back {
+/* NAV */
+.nav {
     display: none;
     margin-top: 18px;
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+.nav button {
+    flex: 1;
 }
 </style>
 </head>
@@ -136,109 +129,101 @@ p {
 <body>
 
 <div class="wrapper">
-    <div class="card">
+<div class="card">
 
-        <!-- PROGRESS -->
-        <div class="progress" id="progress">
-            <span id="progressBar"></span>
-        </div>
+<div class="progress" id="progress">
+    <span id="bar"></span>
+</div>
 
-        <!-- FLOWCHART -->
-        <div class="diagram" id="diagram">
-            <img src="images/diagram.png" alt="Flowchart">
-            <button class="button" onclick="startReading()">Open Letter</button>
-        </div>
+<div class="diagram" id="diagram">
+    <img src="images/diagram.png">
+    <button class="button" onclick="start()">Open Letter</button>
+</div>
 
-        <!-- LETTER -->
-        <div class="text" id="text">
-            <div id="content"></div>
-        </div>
+<div class="text" id="text">
+    <div id="content"></div>
+</div>
 
-        <!-- BACK -->
-        <div class="back" id="backNav">
-            <button class="button secondary" onclick="goHome()">Back to Beginning</button>
-        </div>
+<div class="nav" id="nav">
+    <button class="button secondary" onclick="prev()">◀ Prev</button>
+    <button class="button secondary" onclick="home()">Back to Beginning</button>
+    <button class="button secondary" onclick="next()">Next ▶</button>
+</div>
 
-    </div>
+</div>
 </div>
 
 <script>
-const paragraphs = [
+const pages = [
 `<h1>Hi, Bren.</h1>
-<p>I’m writing this because I want everything to be clear between us.</p>`,
+<p>I want this to be calm and clear.</p>`,
 
 `<p>
-All the effort and attention I’ve given you lately
-is because <span class="highlight">my feelings are still the same today.</span>
+Everything I’ve shown you comes from the same place —
+<span class="highlight">I still care.</span>
 </p>`,
 
 `<p>
-This isn’t about fixing the past.
-It’s about being honest with where I am right now.
+This isn’t about pressure or answers right now.
+Just honesty.
 </p>`,
 
 `<p>
-I want to keep things calm and unforced.
-Your comfort matters more to me than moving fast.
+If there’s still space for us, I’m here.
+If not, I’ll respect that too.
 </p>`,
 
-`<p>
-I just need your honesty —
-is there still a window for us, or is that door closed?
-</p>
-<p>Whatever your answer is, I’ll respect it.</p>
-<p>— Jonathan</p>`
+`<p>— Jonathan</p>`
 ];
 
-let index = 0;
+let i = 0;
+let startX = 0;
 
-/* PROGRESS */
-function updateProgress() {
-    document.getElementById('progressBar').style.width =
-        ((index + 1) / paragraphs.length) * 100 + '%';
+function update() {
+    content.innerHTML = pages[i];
+    bar.style.width = ((i + 1) / pages.length) * 100 + '%';
+    text.scrollTop = 0;
 }
 
-/* START */
-function startReading() {
-    document.getElementById('diagram').style.display = 'none';
-    document.getElementById('text').classList.add('active');
-    document.getElementById('progress').style.display = 'block';
-    document.getElementById('backNav').style.display = 'block';
-    index = 0;
-    document.getElementById('content').innerHTML = paragraphs[index];
-    updateProgress();
+function start() {
+    diagram.style.display = 'none';
+    text.classList.add('active');
+    progress.style.display = 'block';
+    nav.style.display = 'flex';
+    i = 0;
+    update();
 }
 
-/* NAVIGATION */
-function navigate(step) {
-    index = Math.min(paragraphs.length - 1, Math.max(0, index + step));
-    document.getElementById('content').innerHTML = paragraphs[index];
-    document.getElementById('text').scrollTop = 0;
-    updateProgress();
+function next() {
+    if (i < pages.length - 1) { i++; update(); }
+}
+function prev() {
+    if (i > 0) { i--; update(); }
+}
+function home() {
+    diagram.style.display = 'block';
+    text.classList.remove('active');
+    progress.style.display = 'none';
+    nav.style.display = 'none';
+    bar.style.width = '0%';
 }
 
-/* BACK HOME */
-function goHome() {
-    document.getElementById('diagram').style.display = 'block';
-    document.getElementById('text').classList.remove('active');
-    document.getElementById('progress').style.display = 'none';
-    document.getElementById('backNav').style.display = 'none';
-    document.getElementById('progressBar').style.width = '0%';
-}
-
-/* PC SCROLL */
-document.getElementById('text').addEventListener('wheel', e => {
-    if (Math.abs(e.deltaY) > 40) navigate(e.deltaY > 0 ? 1 : -1);
+/* PC scroll */
+text.addEventListener('wheel', e => {
+    if (Math.abs(e.deltaY) > 40) {
+        e.deltaY > 0 ? next() : prev();
+    }
 });
 
-/* MOBILE SWIPE */
-let touchStartY = 0;
-document.getElementById('text').addEventListener('touchstart', e => {
-    touchStartY = e.touches[0].clientY;
+/* MOBILE swipe left/right */
+text.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
 });
-document.getElementById('text').addEventListener('touchend', e => {
-    const delta = touchStartY - e.changedTouches[0].clientY;
-    if (Math.abs(delta) > 50) navigate(delta > 0 ? 1 : -1);
+text.addEventListener('touchend', e => {
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) {
+        diff > 0 ? next() : prev();
+    }
 });
 </script>
 
