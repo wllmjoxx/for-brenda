@@ -16,6 +16,10 @@
     --text: #3a3a3a;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     height: 100vh;
@@ -33,26 +37,45 @@ body {
 }
 
 .card {
-    width: 540px;
-    max-height: 80vh;
+    width: 92%;
+    max-width: 540px;
+    height: 80vh;
     background: var(--card);
-    padding: 48px;
+    padding: 28px 28px 18px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-    border-radius: 14px;
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* PROGRESS BAR */
+.progress {
+    height: 4px;
+    background: var(--soft);
+    border-radius: 2px;
     overflow: hidden;
-    position: relative;
+    margin-bottom: 16px;
+}
+
+.progress span {
+    display: block;
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    transition: width 0.4s ease;
 }
 
 /* DIAGRAM */
 .diagram {
     text-align: center;
-    animation: fadeIn 0.8s ease;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .diagram img {
     width: 100%;
-    border-radius: 10px;
-    margin-bottom: 30px;
+    border-radius: 12px;
+    margin-bottom: 24px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.08);
 }
 
@@ -61,44 +84,29 @@ body {
     border: none;
     background: var(--accent);
     color: #fff;
-    font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
     border-radius: 30px;
     cursor: pointer;
-    transition: all 0.3s ease;
 }
 
-.button.secondary {
-    background: transparent;
-    color: var(--accent);
-    border: 1px solid var(--accent);
-    margin-bottom: 20px;
-}
-
-.button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
-}
-
-/* TEXT */
+/* TEXT AREA */
 .text {
     display: none;
-    opacity: 0;
-    height: 100%;
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 6px;
 }
 
 .text.active {
     display: block;
-    animation: fadeIn 0.8s ease forwards;
 }
 
-#content {
-    transition: opacity 0.6s ease, transform 0.6s ease;
+.text::-webkit-scrollbar {
+    width: 4px;
 }
-
-.fade {
-    opacity: 0;
-    transform: translateY(10px);
+.text::-webkit-scrollbar-thumb {
+    background: var(--soft);
+    border-radius: 4px;
 }
 
 h1 {
@@ -117,26 +125,17 @@ p {
     font-weight: 500;
 }
 
-/* SCROLL INDICATOR */
-.scroll-indicator {
-    position: absolute;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
+/* FOOT */
+.actions {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.button.secondary {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
     font-size: 0.8rem;
-    color: #888;
-    animation: float 1.8s infinite;
-}
-
-@keyframes float {
-    0% { opacity: 0; transform: translate(-50%, 0); }
-    50% { opacity: 1; }
-    100% { opacity: 0; transform: translate(-50%, 10px); }
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
 }
 </style>
 </head>
@@ -146,6 +145,10 @@ p {
 <div class="wrapper">
     <div class="card">
 
+        <div class="progress">
+            <span id="progressBar"></span>
+        </div>
+
         <!-- DIAGRAM -->
         <div class="diagram" id="diagram">
             <img src="images/diagram.png" alt="Diagram">
@@ -154,9 +157,11 @@ p {
 
         <!-- TEXT -->
         <div class="text" id="text">
-            <button class="button secondary" onclick="showDiagram()">View Diagram</button>
             <div id="content"></div>
-            <div class="scroll-indicator">scroll ⌄</div>
+        </div>
+
+        <div class="actions">
+            <button class="button secondary" onclick="showDiagram()">View Diagram</button>
         </div>
 
     </div>
@@ -191,36 +196,57 @@ is there still a window for us, or is that door closed?
 ];
 
 let index = 0;
-let locked = false;
+
+function updateProgress() {
+    document.getElementById('progressBar').style.width =
+        ((index + 1) / paragraphs.length) * 100 + '%';
+}
 
 function startReading() {
     document.getElementById('diagram').style.display = 'none';
-    const text = document.getElementById('text');
-    text.classList.add('active');
+    document.getElementById('text').classList.add('active');
     document.getElementById('content').innerHTML = paragraphs[0];
+    index = 0;
+    updateProgress();
 }
 
 function showDiagram() {
     document.getElementById('text').classList.remove('active');
     document.getElementById('diagram').style.display = 'block';
+    document.getElementById('progressBar').style.width = '0%';
 }
 
-window.addEventListener('wheel', (e) => {
-    const text = document.getElementById('text');
-    if (!text.classList.contains('active') || locked) return;
-
-    locked = true;
-    const content = document.getElementById('content');
-    content.classList.add('fade');
-
-    setTimeout(() => {
-        index = Math.min(paragraphs.length - 1, Math.max(0, index + (e.deltaY > 0 ? 1 : -1)));
-        content.innerHTML = paragraphs[index];
-        content.classList.remove('fade');
-    }, 350);
-
-    setTimeout(() => locked = false, 700);
+/* SCROLL / SWIPE */
+let lastScroll = 0;
+document.getElementById('text').addEventListener('scroll', (e) => {
+    const el = e.target;
+    const progress = el.scrollTop / (el.scrollHeight - el.clientHeight);
+    document.getElementById('progressBar').style.width = (progress * 100) + '%';
 });
+
+/* STEP NAVIGATION */
+document.getElementById('text').addEventListener('wheel', (e) => {
+    if (Math.abs(e.deltaY) < 40) return;
+    navigate(e.deltaY > 0 ? 1 : -1);
+});
+
+let touchStartY = 0;
+document.getElementById('text').addEventListener('touchstart', e => {
+    touchStartY = e.touches[0].clientY;
+});
+document.getElementById('text').addEventListener('touchend', e => {
+    const delta = touchStartY - e.changedTouches[0].clientY;
+    if (Math.abs(delta) > 50) {
+        navigate(delta > 0 ? 1 : -1);
+    }
+});
+
+function navigate(step) {
+    index = Math.min(paragraphs.length - 1, Math.max(0, index + step));
+    document.getElementById('content').innerHTML = paragraphs[index];
+    document.getElementById('text').scrollTop = 0;
+    updateProgress();
+}
 </script>
 
 </body>
