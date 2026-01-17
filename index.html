@@ -44,7 +44,6 @@ body {
     border-radius: 16px;
     display: flex;
     flex-direction: column;
-    position: relative;
 }
 
 /* PROGRESS */
@@ -56,21 +55,19 @@ body {
     margin-bottom: 18px;
     display: none;
 }
-
 .progress span {
-    display: block;
     height: 100%;
+    display: block;
     width: 0%;
     background: var(--accent);
     transition: width 0.4s ease;
 }
 
-/* DIAGRAM */
+/* FLOWCHART */
 .diagram {
     text-align: center;
     margin: auto 0;
 }
-
 .diagram img {
     width: 100%;
     border-radius: 12px;
@@ -88,21 +85,19 @@ body {
     border-radius: 24px;
     cursor: pointer;
 }
-
 .button.secondary {
     background: transparent;
     color: var(--accent);
     border: 1px solid var(--accent);
 }
 
-/* TEXT */
+/* LETTER */
 .text {
     display: none;
     flex: 1;
     overflow-y: auto;
     padding-right: 6px;
 }
-
 .text.active { display: block; }
 
 .text::-webkit-scrollbar {
@@ -129,26 +124,11 @@ p {
     font-weight: 500;
 }
 
-/* NAV */
-.nav {
+/* BACK */
+.back {
     display: none;
-    justify-content: center;
-    gap: 24px;
-    margin-top: 14px;
-    font-size: 0.8rem;
-    color: #aaa;
-}
-
-.nav button {
-    background: none;
-    border: none;
-    font-size: 1.1rem;
-    color: #aaa;
-    cursor: pointer;
-}
-
-.nav button:hover {
-    color: var(--accent);
+    margin-top: 18px;
+    text-align: center;
 }
 </style>
 </head>
@@ -174,15 +154,8 @@ p {
             <div id="content"></div>
         </div>
 
-        <!-- NAV -->
-        <div class="nav" id="nav">
-            <button onclick="navigate(-1)">⬅︎</button>
-            <span>scroll / swipe</span>
-            <button onclick="navigate(1)">➡︎</button>
-        </div>
-
         <!-- BACK -->
-        <div class="nav" id="backNav">
+        <div class="back" id="backNav">
             <button class="button secondary" onclick="goHome()">Back to Beginning</button>
         </div>
 
@@ -219,21 +192,24 @@ is there still a window for us, or is that door closed?
 
 let index = 0;
 
+/* PROGRESS */
 function updateProgress() {
     document.getElementById('progressBar').style.width =
         ((index + 1) / paragraphs.length) * 100 + '%';
 }
 
+/* START */
 function startReading() {
     document.getElementById('diagram').style.display = 'none';
     document.getElementById('text').classList.add('active');
-    document.getElementById('nav').style.display = 'flex';
     document.getElementById('progress').style.display = 'block';
-    document.getElementById('content').innerHTML = paragraphs[0];
+    document.getElementById('backNav').style.display = 'block';
     index = 0;
+    document.getElementById('content').innerHTML = paragraphs[index];
     updateProgress();
 }
 
+/* NAVIGATION */
 function navigate(step) {
     index = Math.min(paragraphs.length - 1, Math.max(0, index + step));
     document.getElementById('content').innerHTML = paragraphs[index];
@@ -241,20 +217,21 @@ function navigate(step) {
     updateProgress();
 }
 
+/* BACK HOME */
 function goHome() {
     document.getElementById('diagram').style.display = 'block';
     document.getElementById('text').classList.remove('active');
-    document.getElementById('nav').style.display = 'none';
     document.getElementById('progress').style.display = 'none';
+    document.getElementById('backNav').style.display = 'none';
     document.getElementById('progressBar').style.width = '0%';
 }
 
-/* WHEEL */
+/* PC SCROLL */
 document.getElementById('text').addEventListener('wheel', e => {
     if (Math.abs(e.deltaY) > 40) navigate(e.deltaY > 0 ? 1 : -1);
 });
 
-/* TOUCH */
+/* MOBILE SWIPE */
 let touchStartY = 0;
 document.getElementById('text').addEventListener('touchstart', e => {
     touchStartY = e.touches[0].clientY;
