@@ -5,14 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For Bren</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
 <style>
+:root {
+    --bg: #f6f1ec;
+    --card: #ffffff;
+    --accent: #c89b8c;
+    --soft: #efe6df;
+    --text: #3a3a3a;
+}
+
 body {
     margin: 0;
     height: 100vh;
     overflow: hidden;
-    font-family: 'Georgia', serif;
-    background-color: #faf9f7;
-    color: #333;
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(180deg, #f6f1ec, #f2ebe5);
+    color: var(--text);
 }
 
 .wrapper {
@@ -23,78 +33,110 @@ body {
 }
 
 .card {
-    width: 90%;
-    max-width: 520px;
-    background: #ffffff;
+    width: 540px;
+    max-height: 80vh;
+    background: var(--card);
     padding: 48px;
-    box-shadow: 0 6px 25px rgba(0,0,0,0.05);
-    border-radius: 6px;
-    line-height: 1.9;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
 }
 
 /* DIAGRAM */
 .diagram {
     text-align: center;
+    animation: fadeIn 0.8s ease;
 }
 
 .diagram img {
     width: 100%;
-    border-radius: 4px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.button {
+    padding: 12px 30px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.button.secondary {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
     margin-bottom: 20px;
 }
 
-.diagram-placeholder {
-    font-size: 0.9rem;
-    color: #777;
-    margin-bottom: 25px;
-}
-
-/* BUTTON */
-.button {
-    padding: 12px 30px;
-    border: 1px solid #ddd;
-    background: none;
-    font-family: inherit;
-    font-size: 0.95rem;
-    cursor: pointer;
-    color: #444;
-    transition: all 0.25s ease;
-}
-
 .button:hover {
-    background: #f2f1ee;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
 }
 
-/* TEXT MODE */
+/* TEXT */
 .text {
     display: none;
     opacity: 0;
-    transition: opacity 0.6s ease;
+    height: 100%;
 }
 
 .text.active {
     display: block;
-    opacity: 1;
+    animation: fadeIn 0.8s ease forwards;
+}
+
+#content {
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+p {
+    line-height: 1.9;
+    margin-bottom: 22px;
 }
 
 .highlight {
-    font-weight: 600;
-    color: #222;
+    color: var(--accent);
+    font-weight: 500;
 }
 
 /* SCROLL INDICATOR */
 .scroll-indicator {
-    margin-top: 35px;
-    text-align: center;
-    font-size: 0.85rem;
-    color: #777;
-    animation: scrollHint 1.8s infinite;
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8rem;
+    color: #888;
+    animation: float 1.8s infinite;
 }
 
-@keyframes scrollHint {
-    0% { opacity: 0; transform: translateY(0); }
+@keyframes float {
+    0% { opacity: 0; transform: translate(-50%, 0); }
     50% { opacity: 1; }
-    100% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 0; transform: translate(-50%, 10px); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 </style>
 </head>
@@ -104,18 +146,15 @@ body {
 <div class="wrapper">
     <div class="card">
 
-        <!-- DIAGRAM FIRST -->
+        <!-- DIAGRAM -->
         <div class="diagram" id="diagram">
-            <img src="images/diagram.png" alt="Diagram"
-                 onerror="this.style.display='none'">
-            <div class="diagram-placeholder">
-                A simple overview before I explain things in words.
-            </div>
+            <img src="images/diagram.png" alt="Diagram">
             <button class="button" onclick="startReading()">Open</button>
         </div>
 
-        <!-- TEXT MODE -->
+        <!-- TEXT -->
         <div class="text" id="text">
+            <button class="button secondary" onclick="showDiagram()">View Diagram</button>
             <div id="content"></div>
             <div class="scroll-indicator">scroll ⌄</div>
         </div>
@@ -125,30 +164,30 @@ body {
 
 <script>
 const paragraphs = [
-    `<h1>Hi, Bren.</h1>
-     <p>I’m writing this because I want everything to be clear between us.</p>`,
+`<h1>Hi, Bren.</h1>
+<p>I’m writing this because I want everything to be clear between us.</p>`,
 
-    `<p>
-        All the effort and attention I’ve given you lately
-        is because <span class="highlight">my feelings are still the same today.</span>
-     </p>`,
+`<p>
+All the effort and attention I’ve given you lately
+is because <span class="highlight">my feelings are still the same today.</span>
+</p>`,
 
-    `<p>
-        This isn’t about fixing the past.
-        It’s about being honest with where I am right now.
-     </p>`,
+`<p>
+This isn’t about fixing the past.
+It’s about being honest with where I am right now.
+</p>`,
 
-    `<p>
-        I want to keep things calm and unforced.
-        Your comfort matters more to me than moving fast.
-     </p>`,
+`<p>
+I want to keep things calm and unforced.
+Your comfort matters more to me than moving fast.
+</p>`,
 
-    `<p>
-        I just need your honesty —
-        is there still a window for us, or is that door closed?
-     </p>
-     <p>Whatever your answer is, I’ll respect it.</p>
-     <p>— Jonathan</p>`
+`<p>
+I just need your honesty —
+is there still a window for us, or is that door closed?
+</p>
+<p>Whatever your answer is, I’ll respect it.</p>
+<p>— Jonathan</p>`
 ];
 
 let index = 0;
@@ -156,22 +195,31 @@ let locked = false;
 
 function startReading() {
     document.getElementById('diagram').style.display = 'none';
-    document.getElementById('text').classList.add('active');
+    const text = document.getElementById('text');
+    text.classList.add('active');
     document.getElementById('content').innerHTML = paragraphs[0];
 }
 
+function showDiagram() {
+    document.getElementById('text').classList.remove('active');
+    document.getElementById('diagram').style.display = 'block';
+}
+
 window.addEventListener('wheel', (e) => {
-    if (!document.getElementById('text').classList.contains('active')) return;
-    if (locked) return;
+    const text = document.getElementById('text');
+    if (!text.classList.contains('active') || locked) return;
 
     locked = true;
+    const content = document.getElementById('content');
+    content.classList.add('fade');
 
-    if (e.deltaY > 0 && index < paragraphs.length - 1) index++;
-    if (e.deltaY < 0 && index > 0) index--;
+    setTimeout(() => {
+        index = Math.min(paragraphs.length - 1, Math.max(0, index + (e.deltaY > 0 ? 1 : -1)));
+        content.innerHTML = paragraphs[index];
+        content.classList.remove('fade');
+    }, 350);
 
-    document.getElementById('content').innerHTML = paragraphs[index];
-
-    setTimeout(() => locked = false, 450);
+    setTimeout(() => locked = false, 700);
 });
 </script>
 
