@@ -44,6 +44,7 @@ body {
     border-radius: 16px;
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
 /* PROGRESS */
@@ -54,6 +55,7 @@ body {
     overflow: hidden;
     margin-bottom: 18px;
     display: none;
+    width: 100%;
 }
 .progress span {
     height: 100%;
@@ -63,33 +65,25 @@ body {
     transition: width 0.4s ease;
 }
 
-/* FLOWCHART */
-.diagram {
-    text-align: center;
-    margin: auto 0;
-}
-.diagram img {
-    width: 100%;
-    border-radius: 12px;
-    margin-bottom: 24px;
-}
-
 /* TEXT */
 .text {
     display: none;
     flex: 1;
     overflow-y: auto;
+    width: 100%;
 }
 .text.active { display: block; }
 
 h1 {
     font-family: 'Playfair Display', serif;
     margin-bottom: 16px;
+    text-align: left;
 }
 
 p {
     line-height: 1.8;
     margin-bottom: 18px;
+    text-align: left;
 }
 
 .highlight {
@@ -131,18 +125,21 @@ p {
 <div class="wrapper">
 <div class="card">
 
-<div class="progress" id="progress">
-    <span id="bar"></span>
+<!-- AWAL: Open Letter -->
+<div id="openLetterDiv">
+    <button class="button" onclick="start()">Open Letter</button>
 </div>
 
-<div>
-    <button class="button" onclick="start()">Open Letter</button>
+<!-- PROGRESS & SURAT -->
+<div class="progress" id="progress">
+    <span id="bar"></span>
 </div>
 
 <div class="text" id="text">
     <div id="content"></div>
 </div>
 
+<!-- NAV TOMBOL -->
 <div class="nav" id="nav">
     <button class="button secondary" onclick="prev()">◀ Prev</button>
     <button class="button secondary" onclick="home()">Back to Beginning</button>
@@ -190,14 +187,16 @@ Take all the time you need, Bren.
 let i = 0;
 let startX = 0;
 
+// UPDATE CONTENT & PROGRESS
 function update() {
     content.innerHTML = pages[i];
     bar.style.width = ((i + 1) / pages.length) * 100 + '%';
     text.scrollTop = 0;
 }
 
+// MULAI SURAT
 function start() {
-    diagram.style.display = 'none';
+    document.getElementById('openLetterDiv').style.display = 'none';
     text.classList.add('active');
     progress.style.display = 'block';
     nav.style.display = 'flex';
@@ -205,6 +204,7 @@ function start() {
     update();
 }
 
+// NEXT / PREV / HOME
 function next() {
     if (i < pages.length - 1) { i++; update(); }
 }
@@ -212,21 +212,21 @@ function prev() {
     if (i > 0) { i--; update(); }
 }
 function home() {
-    diagram.style.display = 'block';
     text.classList.remove('active');
     progress.style.display = 'none';
     nav.style.display = 'none';
+    document.getElementById('openLetterDiv').style.display = 'block';
     bar.style.width = '0%';
 }
 
-/* PC scroll */
+// PC SCROLL
 text.addEventListener('wheel', e => {
     if (Math.abs(e.deltaY) > 40) {
         e.deltaY > 0 ? next() : prev();
     }
 });
 
-/* MOBILE swipe left/right */
+// MOBILE SWIPE LEFT / RIGHT
 text.addEventListener('touchstart', e => {
     startX = e.touches[0].clientX;
 });
